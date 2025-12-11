@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.mcp.json
+*-credentials.json
+credentials.json
+*.pem
+*.key
+.DS_Store
+dist/
+build/
+coverage/
+*.log
