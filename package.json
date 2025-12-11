@@ -21,7 +21,7 @@
     "compounds",
     "ncbi"
   ],
-  "author": "Augmented Nature <hello@augmentednature.ai>",
+  "author": "OpenPharma Contributors",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.6.0",
