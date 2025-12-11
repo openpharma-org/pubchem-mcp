@@ -1,4 +1,3 @@
-![PubChem MCP Server Logo](pubchem-mcp-server-logo.png)
 # Unofficial PubChem MCP Server
 
 A comprehensive Model Context Protocol (MCP) server for accessing the PubChem chemical database. This server provides access to over 110 million chemical compounds with extensive molecular properties, bioassay data, and chemical informatics tools.
@@ -319,13 +318,3 @@ The server is built with a modular architecture:
 - **Integration-ready** for multi-database workflows
 
 This makes it the most comprehensive chemical informatics MCP server available!
-
-## Citation
-If you use this project in your research or publications, please cite it as follows:
-
-```bibtex @misc{pubchemmcp2025, 
-author = {Moudather Chelbi},
-title = {PubChem MCP Server},
-year = {2025},
-howpublished = {https://github.com/openpharma-org/pubchem-mcp},
-note = {Accessed: 2025-06-29}
