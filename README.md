@@ -327,5 +327,5 @@ If you use this project in your research or publications, please cite it as foll
 author = {Moudather Chelbi},
 title = {PubChem MCP Server},
 year = {2025},
-howpublished = {https://github.com/Augmented-Nature/PubChem-MCP-Server},
+howpublished = {https://github.com/openpharma-org/pubchem-mcp},
 note = {Accessed: 2025-06-29}
