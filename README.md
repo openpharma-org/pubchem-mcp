@@ -52,6 +52,22 @@ A comprehensive Model Context Protocol (MCP) server for accessing the PubChem ch
 - **get_literature_references** - PubMed citations
 - **batch_compound_lookup** - Bulk processing (up to 200 compounds)
 
+## Usage
+
+Add the server to your MCP client configuration:
+
+```json
+{
+  "mcpServers": {
+    "pubchem-mcp-server": {
+      "command": "node",
+      "args": ["/path/to/pubchem-mcp-server/build/index.js"],
+      "env": {}
+    }
+  }
+}
+```
+
 ## Resource Templates
 
 Access PubChem data through URI patterns:
