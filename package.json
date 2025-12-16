@@ -24,7 +24,7 @@
   "author": "OpenPharma Contributors",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.6.0",
+    "@modelcontextprotocol/sdk": "^1.25.1",
     "axios": "^1.6.0"
   },
   "devDependencies": {
