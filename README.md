@@ -54,8 +54,6 @@ A comprehensive Model Context Protocol (MCP) server for accessing the PubChem ch
 
 ## Usage
 
-Add the server to your MCP client configuration:
-
 ```json
 {
   "mcpServers": {
