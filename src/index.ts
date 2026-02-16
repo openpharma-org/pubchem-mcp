@@ -386,6 +386,7 @@ class PubChemServer {
                   'get_assay_info',
                   'get_safety_data',
                   'batch_compound_lookup',
+                  'get_patent_ids',
                   // Unimplemented methods (commented out):
                   // 'search_by_inchi',
                   // 'search_by_cas_number',
@@ -407,7 +408,7 @@ class PubChemServer {
                   // 'search_patents',
                   // 'get_literature_references',
                 ],
-                description: 'The PubChem operation to perform: search_compounds (search by name/CAS/formula), get_compound_info (detailed compound by CID), search_by_smiles (exact SMILES match), get_compound_synonyms (all names), search_similar_compounds (Tanimoto similarity), get_3d_conformers (3D structural data), analyze_stereochemistry (chirality analysis), get_compound_properties (MW/logP/TPSA), get_assay_info (detailed assay by AID), get_safety_data (GHS classifications), batch_compound_lookup (bulk processing up to 200 compounds)',
+                description: 'The PubChem operation to perform: search_compounds (search by name/CAS/formula), get_compound_info (detailed compound by CID), search_by_smiles (exact SMILES match), get_compound_synonyms (all names), search_similar_compounds (Tanimoto similarity), get_3d_conformers (3D structural data), analyze_stereochemistry (chirality analysis), get_compound_properties (MW/logP/TPSA), get_assay_info (detailed assay by AID), get_safety_data (GHS classifications), batch_compound_lookup (bulk processing up to 200 compounds), get_patent_ids (patent IDs associated with a compound by CID or SMILES)',
               },
               query: {
                 type: 'string',
@@ -567,6 +568,11 @@ class PubChemServer {
           // Cross-References & Integration
           case 'batch_compound_lookup':
             result = await this.handleBatchCompoundLookup(args);
+            break;
+
+          // Patents
+          case 'get_patent_ids':
+            result = await this.handleGetPatentIds(args);
             break;
 
           default:
@@ -986,6 +992,54 @@ class PubChemServer {
       return { content: [{ type: 'text', text: JSON.stringify({ batch_results: results }, null, 2) }] };
     } catch (error) {
       throw new McpError(ErrorCode.InternalError, `Batch lookup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  private async handleGetPatentIds(args: any) {
+    try {
+      let cid: number | string;
+
+      if (args.cid) {
+        cid = args.cid;
+      } else if (args.smiles) {
+        // Resolve SMILES to CID first
+        const cidResponse = await this.apiClient.get(`/compound/smiles/${encodeURIComponent(args.smiles)}/cids/JSON`);
+        const cids = cidResponse.data?.IdentifierList?.CID;
+        if (!cids || cids.length === 0) {
+          return {
+            content: [{ type: 'text', text: JSON.stringify({ message: 'No compound found for the given SMILES', smiles: args.smiles }, null, 2) }],
+          };
+        }
+        cid = cids[0];
+      } else {
+        throw new McpError(ErrorCode.InvalidParams, 'Either "cid" or "smiles" is required for get_patent_ids');
+      }
+
+      const response = await this.apiClient.get(`/compound/cid/${cid}/xrefs/PatentID/JSON`);
+      const patentIds = response.data?.InformationList?.Information?.[0]?.PatentID || [];
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              cid,
+              smiles: args.smiles || null,
+              patent_count: patentIds.length,
+              patent_ids: patentIds,
+              patent_urls: patentIds.slice(0, 20).map((id: string) =>
+                `https://patents.google.com/patent/${id}`
+              ),
+            }, null, 2),
+          },
+        ],
+      };
+    } catch (error) {
+      if (error instanceof McpError) throw error;
+      throw new McpError(
+        ErrorCode.InternalError,
+        `Failed to get patent IDs: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
